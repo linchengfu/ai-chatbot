@@ -1,6 +1,7 @@
 import {
   type Message,
   createDataStreamResponse,
+  generateText,
   smoothStream,
   streamText,
 } from 'ai';
@@ -128,7 +129,6 @@ export async function POST(request: Request) {
         });
 
         result.consumeStream();
-
         result.mergeIntoDataStream(dataStream, {
           sendReasoning: true,
         });

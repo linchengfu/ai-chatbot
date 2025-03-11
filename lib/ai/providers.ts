@@ -3,7 +3,7 @@ import {
   extractReasoningMiddleware,
   wrapLanguageModel,
 } from 'ai';
-import { openai } from '@ai-sdk/openai';
+import { openai, createOpenAI } from '@ai-sdk/openai';
 import { fireworks } from '@ai-sdk/fireworks';
 import { isTestEnvironment } from '../constants';
 import {
@@ -12,6 +12,11 @@ import {
   reasoningModel,
   titleModel,
 } from './models.test';
+
+const infinite = createOpenAI({
+  baseURL: process.env.INFINI_BASE_URL,
+  apiKey: process.env.INFINI_API_KEY,
+});
 
 export const myProvider = isTestEnvironment
   ? customProvider({
@@ -30,6 +35,10 @@ export const myProvider = isTestEnvironment
         'chat-model-reasoning': wrapLanguageModel({
           model: fireworks('accounts/fireworks/models/deepseek-r1'),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
+        }),
+        'deepseek-r1': wrapLanguageModel({
+          model: infinite('deepseek-r1'),
+          middleware: extractReasoningMiddleware({ tagName: 'think',startWithReasoning: true }),
         }),
         'title-model': openai('gpt-4-turbo'),
         'artifact-model': openai('gpt-4o-mini'),
