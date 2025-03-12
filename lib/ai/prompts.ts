@@ -39,7 +39,7 @@ export const systemPrompt = ({
 }: {
   selectedChatModel: string;
 }) => {
-  if (selectedChatModel === 'chat-model-reasoning') {
+  if (['chat-model-reasoning', 'deepseek-r1'].includes(selectedChatModel)) {
     return regularPrompt;
   } else {
     return `${regularPrompt}\n\n${artifactsPrompt}`;

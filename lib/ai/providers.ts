@@ -13,11 +13,16 @@ import {
   titleModel,
 } from './models.test';
 
+const arkDeepseekR1 = createOpenAI({
+  baseURL: process.env.ARK_BASE_URL,
+  apiKey: process.env.ARK_API_KEY,
+  compatibility: 'compatible',
+});
+
 const infinite = createOpenAI({
   baseURL: process.env.INFINI_BASE_URL,
   apiKey: process.env.INFINI_API_KEY,
 });
-
 export const myProvider = isTestEnvironment
   ? customProvider({
       languageModels: {
@@ -37,8 +42,8 @@ export const myProvider = isTestEnvironment
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
         'deepseek-r1': wrapLanguageModel({
-          model: infinite('deepseek-r1'),
-          middleware: extractReasoningMiddleware({ tagName: 'think',startWithReasoning: true }),
+          model: arkDeepseekR1('deepseek-r1-250120'),
+          middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
         'title-model': openai('gpt-4-turbo'),
         'artifact-model': openai('gpt-4o-mini'),

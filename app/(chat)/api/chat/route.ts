@@ -1,11 +1,11 @@
 import {
   type Message,
   createDataStreamResponse,
-  generateText,
   smoothStream,
   streamText,
 } from 'ai';
 import { auth } from '@/app/(auth)/auth';
+
 import { systemPrompt } from '@/lib/ai/prompts';
 import {
   deleteChatById,
@@ -78,15 +78,17 @@ export async function POST(request: Request) {
           system: systemPrompt({ selectedChatModel }),
           messages,
           maxSteps: 5,
-          experimental_activeTools:
-            selectedChatModel === 'chat-model-reasoning'
-              ? []
-              : [
-                  'getWeather',
-                  'createDocument',
-                  'updateDocument',
-                  'requestSuggestions',
-                ],
+          experimental_activeTools: [
+            'chat-model-reasoning',
+            'deepseek-r1',
+          ].includes(selectedChatModel)
+            ? []
+            : [
+                'getWeather',
+                'createDocument',
+                'updateDocument',
+                'requestSuggestions',
+              ],
           experimental_transform: smoothStream({ chunking: 'word' }),
           experimental_generateMessageId: generateUUID,
           tools: {
@@ -129,9 +131,16 @@ export async function POST(request: Request) {
         });
 
         result.consumeStream();
+
         result.mergeIntoDataStream(dataStream, {
           sendReasoning: true,
         });
+
+        result.reasoning.then((reasoning) => console.log(999, reasoning));
+
+        result.reasoningDetails.then((reasoningDetails) =>
+          console.log(`reasoningDetails ------`, reasoningDetails),
+        );
       },
       onError: () => {
         return 'Oops, an error occured!';
