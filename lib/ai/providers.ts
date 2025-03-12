@@ -3,7 +3,7 @@ import {
   extractReasoningMiddleware,
   wrapLanguageModel,
 } from 'ai';
-import { openai, createOpenAI } from '@ai-sdk/openai';
+import { openai } from '@ai-sdk/openai';
 import { fireworks } from '@ai-sdk/fireworks';
 import { isTestEnvironment } from '../constants';
 import {
@@ -12,14 +12,14 @@ import {
   reasoningModel,
   titleModel,
 } from './models.test';
+import { deepseek, createDeepSeek } from '@ai-sdk/deepseek';
 
-const arkDeepseekR1 = createOpenAI({
+const ArkR1 = createDeepSeek({
   baseURL: process.env.ARK_BASE_URL,
   apiKey: process.env.ARK_API_KEY,
-  compatibility: 'compatible',
 });
 
-const infinite = createOpenAI({
+const infinite = createDeepSeek({
   baseURL: process.env.INFINI_BASE_URL,
   apiKey: process.env.INFINI_API_KEY,
 });
@@ -41,10 +41,18 @@ export const myProvider = isTestEnvironment
           model: fireworks('accounts/fireworks/models/deepseek-r1'),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
+        // 'deepseek-r1': arkDeepseekR1('deepseek-r1-distill-qwen-32b-250120', {
+        //   reasoningEffort: 'high',
+        // }),
         'deepseek-r1': wrapLanguageModel({
-          model: arkDeepseekR1('deepseek-r1-250120'),
+          model: ArkR1('deepseek-r1-distill-qwen-32b-250120'),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
+        // 'deepseek-r1': deepseek('deepseek-reasoner'),
+        // 'deepseek-r1': wrapLanguageModel({
+        //   model: arkDeepseekR1('deepseek-r1-distill-qwen-32b-250120'),
+        //   middleware: extractReasoningMiddleware({ tagName: 'think' }),
+        // }),
         'title-model': openai('gpt-4-turbo'),
         'artifact-model': openai('gpt-4o-mini'),
       },
