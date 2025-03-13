@@ -96,7 +96,7 @@ const components: Partial<Components> = {
   },
 };
 
-const remarkPlugins = [remarkGfm, remarkMath];
+const remarkPlugins = [remarkGfm];
 
 const markdownContent = `
 这是一个行内公式：$E = mc^2$。
@@ -114,7 +114,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
       rehypePlugins={[rehypeKatex]}
       components={components}
     >
-      {markdownContent}
+      {children}
     </ReactMarkdown>
   );
 };

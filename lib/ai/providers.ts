@@ -41,19 +41,21 @@ export const myProvider = isTestEnvironment
           model: fireworks('accounts/fireworks/models/deepseek-r1'),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
-        // 'deepseek-r1': arkDeepseekR1('deepseek-r1-distill-qwen-32b-250120', {
-        //   reasoningEffort: 'high',
-        // }),
+        o1: openai('o1'),
+        'o1-mini': openai('o1-mini'),
+        'o3-mini': openai('o3-mini'),
+        'deepseek-r1-distill-qwen-32b': wrapLanguageModel({
+          model: ArkR1('deepseek-r1-250120'),
+          middleware: extractReasoningMiddleware({ tagName: 'think' }),
+        }),
         'deepseek-r1': wrapLanguageModel({
           model: ArkR1('deepseek-r1-distill-qwen-32b-250120'),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
+        'deepseek-v3': ArkR1('deepseek-v3-241226'),
         // 'deepseek-r1': deepseek('deepseek-reasoner'),
-        // 'deepseek-r1': wrapLanguageModel({
-        //   model: arkDeepseekR1('deepseek-r1-distill-qwen-32b-250120'),
-        //   middleware: extractReasoningMiddleware({ tagName: 'think' }),
-        // }),
-        'title-model': openai('gpt-4-turbo'),
+
+        'title-model': ArkR1('deepseek-v3-241226'),
         'artifact-model': openai('gpt-4o-mini'),
       },
       imageModels: {

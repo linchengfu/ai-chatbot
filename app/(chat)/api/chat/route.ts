@@ -26,6 +26,7 @@ import { getWeather } from '@/lib/ai/tools/get-weather';
 import { isProductionEnvironment } from '@/lib/constants';
 import { NextResponse } from 'next/server';
 import { myProvider } from '@/lib/ai/providers';
+import { reasoningModels } from '@/lib/ai/models';
 
 export const maxDuration = 60;
 
@@ -78,10 +79,7 @@ export async function POST(request: Request) {
           system: systemPrompt({ selectedChatModel }),
           messages,
           maxSteps: 5,
-          experimental_activeTools: [
-            'chat-model-reasoning',
-            'deepseek-r1',
-          ].includes(selectedChatModel)
+          experimental_activeTools: reasoningModels.includes(selectedChatModel)
             ? []
             : [
                 'getWeather',
