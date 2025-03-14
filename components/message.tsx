@@ -118,7 +118,7 @@ const PurePreviewMessage = ({
                       message.role === 'user',
                   })}
                 >
-                  <Markdown>{message.content as string}</Markdown>
+                  <Markdown role="user">{message.content as string}</Markdown>
                 </div>
               </div>
             )}

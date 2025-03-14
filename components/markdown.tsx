@@ -1,11 +1,11 @@
-import Link from "next/link";
-import React, { memo } from "react";
-import ReactMarkdown, { type Components } from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { CodeBlock } from "./code-block";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import "katex/dist/katex.min.css";
+import Link from 'next/link';
+import React, { memo } from 'react';
+import ReactMarkdown, { type Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { CodeBlock } from './code-block';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 
 const components: Partial<Components> = {
   // @ts-expect-error
@@ -96,30 +96,32 @@ const components: Partial<Components> = {
   },
 };
 
-const remarkPlugins = [remarkGfm];
+const remarkPlugins = [remarkGfm, remarkMath];
 
-const markdownContent = `
-这是一个行内公式：$E = mc^2$。
+const NonMemoizedMarkdown = ({
+  children,
+  role = 'assistant',
+}: {
+  children: string;
+  role?: string;
+}) => {
+  const markdownContent =
+    role === 'user' ? children : children.replace(/\\[()\[\]]/g, '$$');
 
-这是一个块级公式：
-$$
-\\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}
-$$
-`;
-
-const NonMemoizedMarkdown = ({ children }: { children: string }) => {
-  return (
+  return role === 'user' ? (
+    <ReactMarkdown components={components}>{markdownContent}</ReactMarkdown>
+  ) : (
     <ReactMarkdown
       remarkPlugins={remarkPlugins}
       rehypePlugins={[rehypeKatex]}
       components={components}
     >
-      {children}
+      {markdownContent}
     </ReactMarkdown>
   );
 };
 
 export const Markdown = memo(
   NonMemoizedMarkdown,
-  (prevProps, nextProps) => prevProps.children === nextProps.children
+  (prevProps, nextProps) => prevProps.children === nextProps.children,
 );
